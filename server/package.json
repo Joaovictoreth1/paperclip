@@ -1,168 +1,249 @@
-{
-  "name": "@paperclipai/server",
-  "version": "0.3.1",
-  "license": "MIT",
-  "homepage": "https://github.com/paperclipai/paperclip",
-  "bugs": {
-    "url": "https://github.com/paperclipai/paperclip/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/paperclipai/paperclip",
-    "directory": "server"
-  },
-  "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
-      }
-    },
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts"
-  },
-  "files": [
-    "dist",
-    "ui-dist",
-    "skills"
-  ],
-  "scripts": {
-    "dev": "tsx src/index.ts",
-    "dev:watch": "cross-env PAPERCLIP_MIGRATION_PROMPT=never PAPERCLIP_MIGRATION_AUTO_APPLY=true tsx ./scripts/dev-watch.ts",
-    "prepare:ui-dist": "bash ../scripts/prepare-server-ui-dist.sh",
-    "build": "pnpm run prepare:runner-vendor && node scripts/verify-runner-vendor-dependencies.mjs && tsc && mkdir -p dist/onboarding-assets dist/built-ins dist/services/scripts dist/vendor/paperclip-runner && cp -R src/onboarding-assets/. dist/onboarding-assets/ && cp -R src/built-ins/. dist/built-ins/ && cp -R src/services/scripts/. dist/services/scripts/ && cp -R ../packages/paperclip-runner/dist/. dist/vendor/paperclip-runner/ && node scripts/write-build-stamp.mjs",
-    "prepack": "pnpm run prepare:ui-dist && pnpm run build",
-    "postpack": "rm -rf ui-dist",
-    "clean": "rm -rf dist",
-    "start": "node dist/index.js",
-    "prepare:runner-vendor": "pnpm --filter @paperclipai/paperclip-runner build",
-    "typecheck": "pnpm run prepare:runner-vendor && pnpm --filter @paperclipai/plugin-sdk ensure-build-deps && tsc --noEmit"
-  },
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.1122.0",
-    "@chat-adapter/discord": "4.39.0",
-    "@chat-adapter/github": "4.39.0",
-    "@chat-adapter/slack": "4.39.0",
-    "@chat-adapter/teams": "4.39.0",
-    "@chat-adapter/telegram": "4.39.0",
-    "@discordjs/ws": "1.2.3",
-    "@grpc/grpc-js": "1.14.4",
-    "@opentelemetry/api": "^1.9.0",
-    "@paperclipai/adapter-claude-local": "workspace:*",
-    "@paperclipai/adapter-codex-local": "workspace:*",
-    "@paperclipai/adapter-cursor-cloud": "workspace:*",
-    "@paperclipai/adapter-cursor-local": "workspace:*",
-    "@paperclipai/adapter-gemini-local": "workspace:*",
-    "@paperclipai/adapter-grok-local": "workspace:*",
-    "@paperclipai/adapter-kimi-local": "workspace:*",
-    "@paperclipai/adapter-openclaw-gateway": "workspace:*",
-    "@paperclipai/adapter-opencode-local": "workspace:*",
-    "@paperclipai/adapter-pi-local": "workspace:*",
-    "@paperclipai/adapter-utils": "workspace:*",
-    "@paperclipai/db": "workspace:*",
-    "@paperclipai/hermes-paperclip-adapter": "workspace:*",
-    "@paperclipai/plugin-sdk": "workspace:*",
-    "@paperclipai/shared": "workspace:*",
-    "@paperclipai/skills-catalog": "workspace:*",
-    "@photon-ai/advanced-imessage": "2.1.0",
-    "@vercel/connect": "0.6.1",
-    "acorn": "8.18.0",
-    "acpx": "0.13.1",
-    "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1",
-    "better-auth": "1.7.2",
-    "chat": "4.39.0",
-    "chokidar": "^5.0.0",
-    "detect-port": "^2.1.0",
-    "dompurify": "^3.4.14",
-    "dotenv": "^17.4.2",
-    "drizzle-orm": "^0.45.2",
-    "embedded-postgres": "^18.1.0-beta.16",
-    "express": "^5.1.0",
-    "heif2jpeg": "0.1.6",
-    "jsdom": "^30.0.1",
-    "multer": "^2.2.0",
-    "nice-grpc": "2.1.17",
-    "nice-grpc-common": "2.0.4",
-    "open": "^11.0.1",
-    "pino": "^10.0.0",
-    "pino-http": "^11.0.0",
-    "pino-pretty": "^13.1.3",
-    "sharp": "^0.35.4",
-    "smol-toml": "^1.4.2",
-    "ssh2": "^1.17.0",
-    "svix": "1.76.1",
-    "ws": "^8.21.3",
-    "zod": "^4.4.3"
-  },
-  "bundleDependencies": [
-    "@chat-adapter/discord",
-    "@chat-adapter/github",
-    "@chat-adapter/slack",
-    "@chat-adapter/teams",
-    "@chat-adapter/telegram",
-    "@discordjs/ws",
-    "acpx"
-  ],
-  "devDependencies": {
-    "@paperclipai/paperclip-runner": "workspace:*",
-    "@types/express": "^5.0.0",
-    "@types/express-serve-static-core": "^5.1.3",
-    "@types/jsdom": "^30.0.0",
-    "@types/multer": "^2.2.0",
-    "@types/node": "^24.0.0",
-    "@types/sharp": "^0.32.0",
-    "@types/supertest": "^7.2.1",
-    "@types/ws": "^8.18.1",
-    "cross-env": "^10.1.0",
-    "supertest": "^7.0.0",
-    "tsx": "^4.23.12",
-    "typescript": "^7.0.2",
-    "vite": "^8.2.2",
-    "vitest": "^4.1.11"
-  },
-  "peerDependencies": {
-    "@opentelemetry/auto-instrumentations-node": "0.79.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "0.221.0",
-    "@opentelemetry/exporter-trace-otlp-http": "0.221.0",
-    "@opentelemetry/exporter-trace-otlp-proto": "0.221.0",
-    "@opentelemetry/resources": "2.10.0",
-    "@opentelemetry/sdk-node": "0.221.0",
-    "@opentelemetry/semantic-conventions": "1.43.0",
-    "@sentry/node": "10.71.0"
-  },
-  "peerDependenciesMeta": {
-    "@opentelemetry/auto-instrumentations-node": {
-      "optional": true
-    },
-    "@opentelemetry/exporter-trace-otlp-grpc": {
-      "optional": true
-    },
-    "@opentelemetry/exporter-trace-otlp-http": {
-      "optional": true
-    },
-    "@opentelemetry/exporter-trace-otlp-proto": {
-      "optional": true
-    },
-    "@opentelemetry/resources": {
-      "optional": true
-    },
-    "@opentelemetry/sdk-node": {
-      "optional": true
-    },
-    "@opentelemetry/semantic-conventions": {
-      "optional": true
-    },
-    "@sentry/node": {
-      "optional": true
-    }
-  },
-  "engines": {
-    "node": ">=24.11.0"
-  }
+import assert from "node:assert/strict";
+import { describe, test } from "node:test";
+
+import {
+  acceptedCandidates,
+  archiveTargetBody,
+  classify,
+  confirmationBody,
+  decodeJwtPayload,
+  fetchMineInboxRows,
+  normalizeApiBase,
+} from "./garden-inbox.mjs";
+
+const NOW = new Date("2026-07-29T00:00:00.000Z");
+const STALE_DAYS = 60;
+const API_CONFIG = Object.freeze({
+  apiBase: "https://paperclip.example",
+  apiKey: "secret",
+});
+
+function createIssue(overrides = {}) {
+  return {
+    id: "issue-1",
+    identifier: "PAP-1",
+    title: "Example",
+    status: "done",
+    updatedAt: "2025-01-01T00:00:00.000Z",
+    blockedBy: [],
+    ...overrides,
+  };
 }
+
+function createWorkspace({ git = {}, linkedIssues, ...overrides } = {}) {
+  const defaultReadiness = {
+    git: { isMergedIntoBase: false, aheadCount: 0, ...git },
+    linkedIssues: linkedIssues ?? [{ isTerminal: true }],
+  };
+
+  return {
+    gone: false,
+    error: null,
+    status: "active",
+    branchCommitAt: "2025-01-01T00:00:00.000Z",
+    readiness: overrides.readiness !== undefined ? overrides.readiness : defaultReadiness,
+    ...overrides,
+  };
+}
+
+function createCandidate(overrides = {}) {
+  return {
+    issueId: "issue-1",
+    identifier: "PAP-1",
+    title: "Candidate",
+    bucket: "B",
+    lastActivityAt: "2026-05-01T00:00:00.000Z",
+    reason: { message: "Stale." },
+    ...overrides,
+  };
+}
+
+function createInteraction({ optionIds = ["issue-1"], selectedOptionIds = ["issue-1"], ...overrides } = {}) {
+  return {
+    id: "interaction-1",
+    kind: "request_checkbox_confirmation",
+    idempotencyKey: "garden-inbox:scan-1:1:1",
+    status: "accepted",
+    payload: { options: optionIds.map((id) => ({ id })) },
+    result: { outcome: "accepted", selectedOptionIds },
+    ...overrides,
+  };
+}
+
+describe("classify()", () => {
+  test("classifies each archive and keep condition into its respective bucket", async (t) => {
+    const cases = [
+      {
+        name: "Bucket A: merged into base and terminal",
+        issue: createIssue(),
+        workspace: createWorkspace({ git: { isMergedIntoBase: true, aheadCount: 0 } }),
+        expectedBucket: "A",
+      },
+      {
+        name: "Bucket B: unmerged with 0 commits ahead and terminal",
+        issue: createIssue(),
+        workspace: createWorkspace(),
+        expectedBucket: "B",
+      },
+      {
+        name: "Bucket C: unmerged with commits ahead",
+        issue: createIssue(),
+        workspace: createWorkspace({ git: { isMergedIntoBase: false, aheadCount: 2 } }),
+        expectedBucket: "C",
+      },
+      {
+        name: "Bucket D: active/in-progress issue",
+        issue: createIssue({ status: "in_progress" }),
+        workspace: createWorkspace(),
+        expectedBucket: "D",
+      },
+    ];
+
+    for (const { name, issue, workspace, expectedBucket } of cases) {
+      await t.test(name, () => {
+        assert.equal(classify(issue, workspace, STALE_DAYS, NOW).bucket, expectedBucket);
+      });
+    }
+  });
+
+  test("keeps candidates when workspace safety inspection fails", () => {
+    const failedWorkspace = createWorkspace({
+      error: "503 Service Unavailable",
+      readiness: null,
+    });
+
+    const result = classify(createIssue(), failedWorkspace, STALE_DAYS, NOW);
+
+    assert.equal(result.bucket, "D");
+    assert.equal(result.reason.code, "workspace_inspection_failed");
+  });
+});
+
+describe("confirmationBody() & acceptedCandidates()", () => {
+  const scan = Object.freeze({ scanId: "scan-1", staleDays: STALE_DAYS });
+
+  test("returns only accepted options from the originating scan", () => {
+    const candidate = createCandidate({ issueId: "issue-1", bucket: "A" });
+    const interaction = createInteraction({
+      optionIds: ["issue-1"],
+      selectedOptionIds: ["issue-1"],
+    });
+    const candidateMap = new Map([[candidate.issueId, candidate]]);
+
+    assert.deepEqual(acceptedCandidates(interaction, scan, candidateMap), [candidate]);
+  });
+
+  test("rejects selected ids that were not offered in the interaction", () => {
+    const interaction = createInteraction({
+      optionIds: ["issue-1"],
+      selectedOptionIds: ["issue-2"],
+    });
+
+    assert.throws(
+      () => acceptedCandidates(interaction, scan, new Map()),
+      /was not an option in the interaction/,
+    );
+  });
+
+  test("starts previously declined candidates unchecked and deterministically hashes idempotencyKey", () => {
+    const candidates = [
+      createCandidate({ issueId: "issue-1", identifier: "PAP-1", title: "Kept before" }),
+      createCandidate({ issueId: "issue-2", identifier: "PAP-2", title: "New candidate" }),
+    ];
+    const declinedSet = new Set(["issue-1"]);
+
+    const body = confirmationBody(scan, candidates, 0, 1, declinedSet);
+
+    assert.deepEqual(body.payload.defaultSelectedOptionIds, ["issue-2"]);
+    assert.match(body.payload.options[0].description, /Declined in a previous pass; starts unchecked\./);
+    assert.doesNotMatch(body.payload.options[1].description, /Declined in a previous pass/);
+
+    assert.notEqual(body.idempotencyKey, "garden-inbox:scan-1:1:1");
+    assert.equal(
+      body.idempotencyKey,
+      confirmationBody(scan, candidates, 0, 1, new Set(["issue-1"])).idempotencyKey,
+    );
+    assert.notEqual(
+      body.idempotencyKey,
+      confirmationBody(scan, candidates, 0, 1, new Set(["issue-2"])).idempotencyKey,
+    );
+    assert.equal(
+      confirmationBody(scan, candidates, 0, 1).idempotencyKey,
+      "garden-inbox:scan-1:1:1",
+    );
+    assert.equal(
+      confirmationBody(scan, [candidates[1]], 1, 2, declinedSet).idempotencyKey,
+      "garden-inbox:scan-1:2:2",
+    );
+  });
+});
+
+describe("auth & request helpers", () => {
+  test("preserves an overridden scan user for archive and undo requests", () => {
+    assert.deepEqual(archiveTargetBody({ userId: "target-user" }), { userId: "target-user" });
+  });
+
+  test("decodes the responsible user from JWT and normalizes API URLs", () => {
+    const payload = Buffer.from(JSON.stringify({ responsible_user_id: "user-1" })).toString("base64url");
+
+    assert.equal(decodeJwtPayload(`header.${payload}.signature`).responsible_user_id, "user-1");
+    assert.equal(normalizeApiBase("https://paperclip.example/api/"), "https://paperclip.example");
+  });
+});
+
+describe("fetchMineInboxRows()", () => {
+  test("scans Mine once per status and merges duplicate rows by issue id", async (t) => {
+    const requestedStatuses = [];
+    const fixturesByStatus = {
+      todo: [createIssue({ id: "shared", status: "todo" })],
+      done: [createIssue({ id: "shared", status: "done" }), createIssue({ id: "done-only" })],
+    };
+
+    t.mock.method(globalThis, "fetch", async (url) => {
+      const status = new URL(url).searchParams.get("status");
+      requestedStatuses.push(status);
+      return Response.json(fixturesByStatus[status] ?? [], { status: 200 });
+    });
+
+    const result = await fetchMineInboxRows(API_CONFIG, "user-1");
+
+    assert.deepEqual(requestedStatuses, [
+      "backlog",
+      "todo",
+      "in_progress",
+      "in_review",
+      "blocked",
+      "done",
+    ]);
+    assert.equal(result.rows.length, 2);
+    assert.equal(result.rows.find((row) => row.id === "shared")?.status, "done");
+    assert.equal(result.coverage.duplicateCount, 1);
+    assert.equal(result.coverage.complete, true);
+    assert.deepEqual(result.coverage.statusCounts, {
+      backlog: 0,
+      todo: 1,
+      in_progress: 0,
+      in_review: 0,
+      blocked: 0,
+      done: 2,
+    });
+  });
+
+  test("marks coverage incomplete when an individual status query hits the 500-row cap", async (t) => {
+    t.mock.method(globalThis, "fetch", async (url) => {
+      const status = new URL(url).searchParams.get("status");
+      const rows =
+        status === "done"
+          ? Array.from({ length: 500 }, (_, index) => createIssue({ id: `done-${index}` }))
+          : [];
+      return Response.json(rows, { status: 200 });
+    });
+
+    const result = await fetchMineInboxRows(API_CONFIG, "user-1");
+
+    assert.equal(result.rows.length, 500);
+    assert.equal(result.coverage.complete, false);
+    assert.deepEqual(result.coverage.cappedStatuses, ["done"]);
+    assert.equal(result.coverage.queryCap, 500);
+  });
+});
